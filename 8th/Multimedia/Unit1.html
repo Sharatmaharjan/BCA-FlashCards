@@ -21,110 +21,150 @@ body{font-family:'Poppins',system-ui,sans-serif}
 
 <div class="max-w-4xl w-full px-4 py-8">
 
+<!-- HEADER -->
 <div class="flex justify-between items-center mb-10">
+    <div class="flex items-center gap-4">
+        <div class="w-12 h-12 bg-yellow-400 text-black rounded-2xl flex items-center justify-center text-3xl">🎬</div>
+        <div>
+            <h1 class="text-3xl font-bold">Flashzy Pro</h1>
+            <p class="text-yellow-400">Unit 1: Introduction (6 Hrs)</p>
+        </div>
+    </div>
 
-<div class="flex items-center gap-4">
-<div class="w-12 h-12 bg-yellow-400 text-black rounded-2xl flex items-center justify-center text-3xl">🎬</div>
-<div>
-<h1 class="text-3xl font-bold">Flashzy Pro</h1>
-<p class="text-yellow-400">Unit 1: Introduction</p>
-</div>
+    <div class="flex items-center gap-6">
+        <!-- Progress -->
+        <div onclick="showReviewAllModal()" class="flex items-center gap-2 bg-zinc-900 px-5 py-2 rounded-3xl cursor-pointer">
+            <span class="text-xs uppercase text-zinc-400">Progress</span>
+            <span class="flex gap-4 text-sm">
+                <span>✅ <span id="known-count" class="font-bold">0</span></span>
+                <span>📌 <span id="review-count" class="font-bold">0</span></span>
+            </span>
+        </div>
+
+        <!-- Shuffle -->
+        <div class="flex items-center gap-3 bg-zinc-900 px-5 py-2 rounded-3xl">
+            <span class="text-xs text-zinc-400">SHUFFLE</span>
+            <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" id="shuffle-toggle" onchange="toggleShuffle()" class="sr-only peer">
+                <div class="w-11 h-6 bg-zinc-700 peer-focus:ring-4 peer-focus:ring-yellow-400 rounded-full peer peer-checked:bg-yellow-400"></div>
+            </label>
+        </div>
+
+        <button onclick="showResults()" class="bg-white text-black px-6 py-3 rounded-3xl font-semibold">📊 RESULTS</button>
+    </div>
 </div>
 
-<div class="flex items-center gap-4">
-<div class="flex items-center gap-2 bg-zinc-900 px-4 py-2 rounded-3xl">
-<span class="text-sm text-zinc-400">Shuffle</span>
-<input type="checkbox" id="shuffle-toggle" onchange="toggleShuffle()">
-</div>
-<button onclick="showResults()" class="bg-white text-black px-5 py-2 rounded-3xl font-semibold">📊 Results</button>
-</div>
-
-</div>
-
+<!-- CARD -->
 <div class="relative max-w-2xl mx-auto">
+    <div onclick="flipCard()" class="perspective h-[420px] cursor-pointer">
+        <div id="card-inner" class="card-inner border border-zinc-700 rounded-3xl">
+            <!-- FRONT -->
+            <div class="card-face card-front">
+                <div class="text-yellow-400 text-3xl mb-6">📌</div>
+                <div id="front-text" class="text-3xl font-semibold max-w-md"></div>
+                <div class="absolute bottom-6 text-xs text-zinc-500 uppercase">Tap / Space to flip</div>
+            </div>
+            <!-- BACK -->
+            <div class="card-face card-back">
+                <div class="text-emerald-400 text-sm uppercase mb-4">ANSWER</div>
+                <div id="back-text" class="text-xl text-emerald-100 max-w-md leading-relaxed"></div>
+                <div class="absolute bottom-6 text-xs text-emerald-400/80 uppercase">Multimedia Introduction • Unit 1</div>
+            </div>
+        </div>
+    </div>
 
-<div onclick="flipCard()" class="perspective h-[420px] cursor-pointer">
-
-<div id="card-inner" class="card-inner border border-zinc-700 rounded-3xl">
-
-<div class="card-face card-front">
-<div class="text-yellow-400 text-3xl mb-6">📌</div>
-<div id="front-text" class="text-3xl font-semibold max-w-md"></div>
-<div class="absolute bottom-6 text-xs text-zinc-500 uppercase">Tap / Space to flip</div>
+    <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-zinc-900 text-yellow-400 text-xs px-5 py-1 rounded-full">
+        <span id="card-number">1</span>
+        <span class="text-zinc-600">/</span>
+        <span id="total-cards">30</span>
+    </div>
 </div>
 
-<div class="card-face card-back">
-<div class="text-emerald-400 text-sm uppercase mb-4">Answer</div>
-<div id="back-text" class="text-xl text-emerald-100 max-w-md leading-relaxed"></div>
-<div class="absolute bottom-6 text-xs text-emerald-400/80 uppercase">Multimedia Unit</div>
-</div>
-
-</div>
-</div>
-
-<div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-zinc-900 text-yellow-400 text-xs px-5 py-1 rounded-full">
-<span id="card-number">1</span>
-<span class="text-zinc-600">/</span>
-<span id="total-cards">30</span>
-</div>
-
-</div>
-
+<!-- CONTROLS -->
 <div class="max-w-2xl mx-auto mt-10 flex justify-between items-center">
-
-<button onclick="prevCard()" class="bg-zinc-900 px-6 py-3 rounded-3xl">← Prev</button>
-
-<div class="flex gap-4">
-<button onclick="markKnown();event.stopPropagation()" class="bg-emerald-500 px-6 py-3 rounded-3xl">✅ Known</button>
-<button onclick="markReview();event.stopPropagation()" class="bg-amber-500 px-6 py-3 rounded-3xl">📌 Review</button>
+    <button onclick="prevCard()" class="bg-zinc-900 px-6 py-3 rounded-3xl">← Prev</button>
+    <div class="flex gap-4">
+        <button onclick="markKnown();event.stopImmediatePropagation()" class="bg-emerald-500 px-6 py-3 rounded-3xl">✅ Known</button>
+        <button onclick="markReview();event.stopImmediatePropagation()" class="bg-amber-500 px-6 py-3 rounded-3xl">📌 Review</button>
+    </div>
+    <button onclick="nextCard()" class="bg-zinc-900 px-6 py-3 rounded-3xl">Next →</button>
 </div>
 
-<button onclick="nextCard()" class="bg-zinc-900 px-6 py-3 rounded-3xl">Next →</button>
+<!-- Review Mode -->
+<div onclick="toggleReviewMode()" id="review-mode-btn" class="mx-auto mt-6 flex items-center gap-3 bg-zinc-900 hover:bg-zinc-800 px-8 py-3 rounded-3xl cursor-pointer text-sm font-medium">
+    <span id="review-mode-text">ALL CARDS</span>
+    <span class="text-amber-400">📌</span>
+</div>
 
 </div>
 
+<!-- RESULTS MODAL -->
+<div id="results-modal" onclick="if(event.target.id==='results-modal')hideResultsModal()" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+    <div onclick="event.stopImmediatePropagation()" class="bg-zinc-900 max-w-md w-full mx-4 rounded-3xl p-8">
+        <h2 class="text-3xl font-bold mb-6">Study Summary</h2>
+        <div class="grid grid-cols-3 gap-4 mb-8">
+            <div class="bg-zinc-800 p-6 rounded-3xl text-center"><div id="modal-total" class="text-5xl font-bold">30</div><div class="text-xs text-zinc-400">Total</div></div>
+            <div class="bg-emerald-900/30 border border-emerald-400 p-6 rounded-3xl text-center"><div id="modal-known" class="text-5xl font-bold text-emerald-400">0</div><div class="text-xs text-emerald-400">Known</div></div>
+            <div class="bg-amber-900/30 border border-amber-400 p-6 rounded-3xl text-center"><div id="modal-review" class="text-5xl font-bold text-amber-400">0</div><div class="text-xs text-amber-400">Review</div></div>
+        </div>
+        <div id="trophy" class="hidden text-center text-7xl mb-4">🏆</div>
+        <div id="motivational-text" class="italic text-center bg-zinc-800 p-6 rounded-3xl"></div>
+        <div class="flex gap-3 mt-8">
+            <button onclick="hideResultsModal();restartStudy()" class="flex-1 py-4 bg-zinc-800 rounded-3xl">RESTART</button>
+            <button onclick="shareProgress()" class="flex-1 py-4 bg-yellow-400 text-black rounded-3xl font-semibold">SHARE PROGRESS</button>
+        </div>
+    </div>
+</div>
+
+<!-- REVIEW ALL MODAL -->
+<div id="review-all-modal" onclick="if(event.target.id==='review-all-modal')hideReviewAllModal()" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+    <div onclick="event.stopImmediatePropagation()" class="bg-zinc-900 w-full max-w-lg mx-4 rounded-3xl overflow-hidden">
+        <div class="px-8 py-6 border-b flex justify-between"><h3 class="font-bold text-xl">All 30 Cards • Status</h3><button onclick="hideReviewAllModal()" class="text-3xl">×</button></div>
+        <div id="card-list" class="max-h-[420px] overflow-auto p-4 space-y-2"></div>
+        <div class="p-4"><button onclick="hideReviewAllModal()" class="w-full py-4 bg-zinc-800 rounded-3xl">CLOSE</button></div>
+    </div>
 </div>
 
 <script>
-
 const originalCards=[
-{front:"What is Multimedia?",back:"Combination of text, graphics, audio, video and animation controlled by computer."},
-{front:"Multimedia in Education",back:"Interactive e-learning modules, virtual labs and online courses."},
-{front:"Multimedia in Business",back:"Corporate presentations, video meetings and product demos."},
-{front:"Multimedia in Entertainment",back:"Video games, streaming platforms and animated films."},
-{front:"Multimedia in Medicine",back:"3D visualization, telemedicine and surgery simulations."},
-{front:"Multimedia in Government",back:"Public kiosks, digital information boards and defense simulators."},
-{front:"Multimedia in Advertising",back:"Interactive ads, banners and digital catalogues."},
-{front:"Hypertext",back:"Non-linear linked text structure like hyperlinks in Wikipedia."},
-{front:"Hypermedia",back:"Extension of hypertext including images, video and sound."},
-{front:"Nodes",back:"Basic units of information such as pages or media objects."},
-{front:"Links",back:"Connections between nodes."},
-{front:"Anchors",back:"Clickable start or end point of a hyperlink."},
-{front:"Perception Medium",back:"Human senses used to receive information like sight or hearing."},
-{front:"Representation Medium",back:"Internal digital formats such as JPEG, PNG, MP3."},
-{front:"Presentation Medium",back:"Input and output devices like keyboard, monitor and speakers."},
-{front:"Storage Medium",back:"Devices storing data such as HDD, SSD or USB."},
-{front:"Transmission Medium",back:"Channels transferring data like fiber or WiFi."},
-{front:"Multimedia System",back:"Computer system capable of integrating multiple media."},
-{front:"Integration",back:"Combining all media elements into one system."},
-{front:"Interactivity",back:"User controls the media content."},
-{front:"Digital Representation",back:"All media stored in binary format."},
-{front:"High Processing Power",back:"Needed for tasks like 4K video rendering."},
-{front:"Large Storage",back:"Multimedia files require large storage."},
-{front:"High Speed Network",back:"Needed for streaming media online."},
-{front:"Multitasking OS",back:"Operating system running many media processes simultaneously."},
-{front:"Specialized Hardware",back:"GPUs, sound cards and codecs."},
-{front:"Synchronization",back:"Audio and video must remain perfectly timed."},
-{front:"Data Management",back:"Handling large multimedia databases."},
-{front:"Example of Multimedia App",back:"YouTube streaming platform."},
-{front:"Future of Multimedia",back:"VR, AR and AI powered interactive media."}
+{front:"What is Multimedia?",back:"The combination of multiple media elements (text, graphics, audio, video, and animation) controlled by a computer to convey information or create an experience."},
+{front:"Multimedia in Education",back:"Interactive e-learning modules, virtual labs, online courses (e.g., Coursera, Byju's)."},
+{front:"Multimedia in Business",back:"Corporate presentations, video conferencing (Zoom/Teams), product demos, virtual training."},
+{front:"Multimedia in Entertainment",back:"Video games, streaming services (Netflix/YouTube), animated movies, special effects in films."},
+{front:"Multimedia in Medicine",back:"3D visualization of organs for surgery simulation, telemedicine, patient education systems."},
+{front:"Multimedia in Government",back:"Interactive kiosks for public information, digital signage, training for defense personnel using simulators."},
+{front:"Multimedia in Advertising",back:"Interactive billboards, online banner ads, product catalogues."},
+{front:"Global Structure of Multimedia",back:"Elements organized and linked together in a non-linear fashion, much like the World Wide Web. Based on Hypermedia."},
+{front:"Hypertext",back:"A non-linear, linked structure of text (e.g., Wikipedia articles with blue hyperlinks)."},
+{front:"Hypermedia",back:"Extension of hypertext that includes links to other media like images, sound, and video."},
+{front:"Nodes",back:"The fundamental units of information (a single page, a paragraph, an image)."},
+{front:"Links",back:"The connections or references between nodes (hyperlinks)."},
+{front:"Anchors",back:"The starting and ending points of a link (the clickable text or image)."},
+{front:"Perception Medium",back:"How humans perceive information: Text (sight), Audio (hearing), Tactile (touch e.g. vibration)."},
+{front:"Representation Medium",back:"Internal computer format: Text (ASCII, Unicode), Image (JPEG, PNG, GIF), Audio (MP3, WAV)."},
+{front:"Presentation Medium",back:"Input/output tools: Keyboard, mouse, microphone, camera, monitor, speaker, printer."},
+{front:"Storage Medium",back:"Physical devices that hold the data: HDD, SSD, CD-ROM, USB flash drive."},
+{front:"Transmission Medium",back:"Physical channel for data transfer: Copper wire (Ethernet), Fiber optic, Radio waves (Wi-Fi)."},
+{front:"Multimedia System",back:"A computer-based system capable of creating, integrating, storing, retrieving, and presenting two or more types of media."},
+{front:"Computer-Controlled",back:"All operations from storage to presentation are managed by a computer."},
+{front:"Integration",back:"All media elements are combined and handled as a single cohesive unit."},
+{front:"Interactivity",back:"User has control over the media (pause, play, navigate, choose options)."},
+{front:"Digital Representation",back:"All media stored and processed in digital (binary) form."},
+{front:"Very High Processing Power",back:"Requires powerful CPU/GPU for encoding/decoding (e.g. 4K video rendering)."},
+{front:"Large Storage & High-Speed Access",back:"Multimedia files are huge – needs large fast drives."},
+{front:"High-Speed Network",back:"Essential for streaming (e.g. fiber optics for Netflix at 25 Mbps+)."},
+{front:"Multitasking OS",back:"Handles multiple tasks at once (audio in background + video rendering)."},
+{front:"Specialized Hardware & Software",back:"Sound cards, GPUs, codecs, media players required."},
+{front:"Challenge: Synchronization",back:"Media streams must be perfectly timed (e.g. audio lip-sync with video)."},
+{front:"Challenge: Data Management",back:"Storing, indexing and retrieving massive unstructured multimedia data (e.g. YouTube's billions of hours)."}
 ]
 
 let deck=[]
-let statuses=new Array(originalCards.length).fill("not")
+let statuses=new Array(30).fill("not-studied")
 let current=0
 let flipped=false
 let shuffle=false
+let studyMode="all"
 
 function shuffleArray(arr){
 const shuffled=[...arr]
@@ -136,8 +176,10 @@ return shuffled
 }
 
 function prepareDeck(){
-deck=[...Array(originalCards.length).keys()]
-if(shuffle) deck=shuffleArray(deck)
+let indices=[...Array(30).keys()]
+if(studyMode==="review") indices=indices.filter(i=>statuses[i]==="review")
+if(shuffle) indices=shuffleArray(indices)
+deck=indices
 current=0
 loadCard()
 }
@@ -146,7 +188,7 @@ function loadCard(){
 let idx=deck[current]
 let card=originalCards[idx]
 document.getElementById("front-text").textContent=card.front
-document.getElementById("back-text").textContent=card.back
+document.getElementById("back-text").innerHTML=card.back
 document.getElementById("card-number").textContent=current+1
 document.getElementById("total-cards").textContent=deck.length
 document.getElementById("card-inner").classList.remove("flipped")
@@ -158,28 +200,25 @@ flipped=!flipped
 document.getElementById("card-inner").classList.toggle("flipped")
 }
 
-function nextCard(){
-if(current<deck.length-1){
-current++
-loadCard()
-}
-}
-
-function prevCard(){
-if(current>0){
-current--
-loadCard()
-}
-}
+function nextCard(){if(current<deck.length-1){current++;loadCard()}}
+function prevCard(){if(current>0){current--;loadCard()}}
 
 function markKnown(){
 statuses[deck[current]]="known"
-setTimeout(nextCard,300)
+updateProgress()
+setTimeout(()=>{if(current<deck.length-1)nextCard()},300)
 }
-
 function markReview(){
 statuses[deck[current]]="review"
-setTimeout(nextCard,300)
+updateProgress()
+setTimeout(()=>{if(current<deck.length-1)nextCard()},300)
+}
+
+function updateProgress(){
+let known=statuses.filter(s=>s==="known").length
+let review=statuses.filter(s=>s==="review").length
+document.getElementById("known-count").textContent=known
+document.getElementById("review-count").textContent=review
 }
 
 function toggleShuffle(){
@@ -187,26 +226,62 @@ shuffle=document.getElementById("shuffle-toggle").checked
 prepareDeck()
 }
 
+function toggleReviewMode(){
+studyMode=studyMode==="all"?"review":"all"
+document.getElementById("review-mode-text").textContent=studyMode==="all"?"ALL CARDS":"REVIEW ONLY"
+prepareDeck()
+}
+
 function showResults(){
 let known=statuses.filter(s=>s==="known").length
 let review=statuses.filter(s=>s==="review").length
-let percent=Math.round(((known+review)/originalCards.length)*100)
-alert("Study Results\n\nKnown: "+known+"\nReview: "+review+"\nCompletion: "+percent+"%")
+let percent=Math.round(((known+review)/30)*100)
+document.getElementById("modal-total").textContent=30
+document.getElementById("modal-known").textContent=known
+document.getElementById("modal-review").textContent=review
+document.getElementById("motivational-text").innerHTML=percent>80?"Outstanding performance! You mastered Unit 1 🏆":"Great work! Keep reviewing the marked cards."
+document.getElementById("trophy").classList.toggle("hidden",percent<=80)
+document.getElementById("results-modal").classList.remove("hidden")
+}
+
+function hideResultsModal(){document.getElementById("results-modal").classList.add("hidden")}
+function shareProgress(){
+let known=statuses.filter(s=>s==="known").length
+let review=statuses.filter(s=>s==="review").length
+let percent=Math.round(((known+review)/30)*100)
+navigator.clipboard.writeText(`Flashzy Pro Unit 1: ${percent}% complete!\n✅ Known: ${known}\n📌 Review: ${review}\n\nReady for the next unit! #FlashzyPro`)
+alert("Progress copied to clipboard ✅")
+}
+
+function showReviewAllModal(){
+let html=""
+originalCards.forEach((c,i)=>{
+let badge=statuses[i]==="known"?`<span class="bg-emerald-500 text-white px-3 py-1 text-xs rounded-full">KNOWN</span>`:
+statuses[i]==="review"?`<span class="bg-amber-500 text-white px-3 py-1 text-xs rounded-full">REVIEW</span>`:
+`<span class="bg-zinc-700 text-zinc-400 px-3 py-1 text-xs rounded-full">NOT STUDIED</span>`
+html+=`<div class="flex justify-between bg-zinc-800 p-4 rounded-2xl text-sm">${c.front}${badge}</div>`
+})
+document.getElementById("card-list").innerHTML=html
+document.getElementById("review-all-modal").classList.remove("hidden")
+}
+function hideReviewAllModal(){document.getElementById("review-all-modal").classList.add("hidden")}
+
+function restartStudy(){
+hideResultsModal()
+statuses=new Array(30).fill("not-studied")
+updateProgress()
+prepareDeck()
 }
 
 document.addEventListener("keydown",e=>{
 if(e.key==="ArrowRight") nextCard()
 if(e.key==="ArrowLeft") prevCard()
-if(e.key===" "){
-e.preventDefault()
-flipCard()
-}
+if(e.key===" "){e.preventDefault();flipCard()}
 })
 
 prepareDeck()
-
-console.log("Flashzy Pro loaded successfully")
-
+updateProgress()
+console.log("%c✅ Flashzy Pro loaded successfully with your working flip CSS 🚀","color:#fde047;font-family:monospace")
 </script>
 
 </body>
