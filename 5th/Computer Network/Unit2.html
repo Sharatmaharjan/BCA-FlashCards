@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flashzy Pro • Unit 2: The Physical Layer</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+body{font-family:'Poppins',system-ui,sans-serif}
+.perspective{perspective:1400px}
+.card-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.4,.2,.2,1)}
+.card-inner.flipped{transform:rotateY(180deg)}
+.card-face{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:40px;text-align:center;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:24px}
+.card-front{background:linear-gradient(135deg,#27272a,#18181b)}
+.card-back{background:linear-gradient(135deg,#064e3b,#18181b);transform:rotateY(180deg)}
+</style>
+</head>
+<body class="bg-zinc-950 text-white min-h-screen flex items-center justify-center">
+<div class="max-w-4xl w-full px-4 py-8">
+<!-- HEADER -->
+<div class="flex justify-between items-center mb-10">
+    <div class="flex items-center gap-4">
+        <div class="w-12 h-12 bg-yellow-400 text-black rounded-2xl flex items-center justify-center text-3xl">📡</div>
+        <div>
+            <h1 class="text-3xl font-bold">Flashzy Pro</h1>
+            <p class="text-yellow-400">Unit 2: The Physical Layer</p>
+        </div>
+    </div>
+    <div class="flex items-center gap-6">
+        <div onclick="showReviewAllModal()" class="flex items-center gap-2 bg-zinc-900 px-5 py-2 rounded-3xl cursor-pointer">
+            <span class="text-xs uppercase text-zinc-400">Progress</span>
+            <span class="flex gap-4 text-sm">
+                <span>✅ <span id="known-count" class="font-bold">0</span></span>
+                <span>📌 <span id="review-count" class="font-bold">0</span></span>
+            </span>
+        </div>
+        <div class="flex items-center gap-3 bg-zinc-900 px-5 py-2 rounded-3xl">
+            <span class="text-xs text-zinc-400">SHUFFLE</span>
+            <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" id="shuffle-toggle" onchange="toggleShuffle()" class="sr-only peer">
+                <div class="w-11 h-6 bg-zinc-700 peer-focus:ring-4 peer-focus:ring-yellow-400 rounded-full peer peer-checked:bg-yellow-400"></div>
+            </label>
+        </div>
+        <button onclick="showResults()" class="bg-white text-black px-6 py-3 rounded-3xl font-semibold">📊 RESULTS</button>
+    </div>
+</div>
+<!-- CARD -->
+<div class="relative max-w-2xl mx-auto">
+    <div onclick="flipCard()" class="perspective h-[420px] cursor-pointer">
+        <div id="card-inner" class="card-inner border border-zinc-700 rounded-3xl">
+            <div class="card-face card-front">
+                <div class="text-yellow-400 text-3xl mb-6">📌</div>
+                <div id="front-text" class="text-3xl font-semibold max-w-md"></div>
+                <div class="absolute bottom-6 text-xs text-zinc-500 uppercase">Tap / Space to flip</div>
+            </div>
+            <div class="card-face card-back">
+                <div class="text-emerald-400 text-sm uppercase mb-4">ANSWER</div>
+                <div id="back-text" class="text-xl text-emerald-100 max-w-md leading-relaxed"></div>
+                <div class="absolute bottom-6 text-xs text-emerald-400/80 uppercase">The Physical Layer • Unit 2</div>
+            </div>
+        </div>
+    </div>
+    <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-zinc-900 text-yellow-400 text-xs px-5 py-1 rounded-full">
+        <span id="card-number">1</span>
+        <span class="text-zinc-600">/</span>
+        <span id="total-cards">32</span>
+    </div>
+</div>
+<!-- CONTROLS -->
+<div class="max-w-2xl mx-auto mt-10 flex justify-between items-center">
+    <button onclick="prevCard()" class="bg-zinc-900 px-6 py-3 rounded-3xl">← Prev</button>
+    <div class="flex gap-4">
+        <button onclick="markKnown();event.stopImmediatePropagation()" class="bg-emerald-500 px-6 py-3 rounded-3xl">✅ Known</button>
+        <button onclick="markReview();event.stopImmediatePropagation()" class="bg-amber-500 px-6 py-3 rounded-3xl">📌 Review</button>
+    </div>
+    <button onclick="nextCard()" class="bg-zinc-900 px-6 py-3 rounded-3xl">Next →</button>
+</div>
+<!-- Review Mode -->
+<div onclick="toggleReviewMode()" id="review-mode-btn" class="mx-auto mt-6 flex items-center gap-3 bg-zinc-900 hover:bg-zinc-800 px-8 py-3 rounded-3xl cursor-pointer text-sm font-medium">
+    <span id="review-mode-text">ALL CARDS</span>
+    <span class="text-amber-400">📌</span>
+</div>
+</div>
+
+<!-- RESULTS MODAL -->
+<div id="results-modal" onclick="if(event.target.id==='results-modal')hideResultsModal()" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+    <div onclick="event.stopImmediatePropagation()" class="bg-zinc-900 max-w-md w-full mx-4 rounded-3xl p-8">
+        <h2 class="text-3xl font-bold mb-6">Study Summary</h2>
+        <div class="grid grid-cols-3 gap-4 mb-8">
+            <div class="bg-zinc-800 p-6 rounded-3xl text-center"><div id="modal-total" class="text-5xl font-bold">32</div><div class="text-xs text-zinc-400">Total</div></div>
+            <div class="bg-emerald-900/30 border border-emerald-400 p-6 rounded-3xl text-center"><div id="modal-known" class="text-5xl font-bold text-emerald-400">0</div><div class="text-xs text-emerald-400">Known</div></div>
+            <div class="bg-amber-900/30 border border-amber-400 p-6 rounded-3xl text-center"><div id="modal-review" class="text-5xl font-bold text-amber-400">0</div><div class="text-xs text-amber-400">Review</div></div>
+        </div>
+        <div id="trophy" class="hidden text-center text-7xl mb-4">🏆</div>
+        <div id="motivational-text" class="italic text-center bg-zinc-800 p-6 rounded-3xl"></div>
+        <div class="flex gap-3 mt-8">
+            <button onclick="hideResultsModal();restartStudy()" class="flex-1 py-4 bg-zinc-800 rounded-3xl">RESTART</button>
+            <button onclick="shareProgress()" class="flex-1 py-4 bg-yellow-400 text-black rounded-3xl font-semibold">SHARE PROGRESS</button>
+        </div>
+    </div>
+</div>
+
+<!-- REVIEW ALL MODAL -->
+<div id="review-all-modal" onclick="if(event.target.id==='review-all-modal')hideReviewAllModal()" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+    <div onclick="event.stopImmediatePropagation()" class="bg-zinc-900 w-full max-w-lg mx-4 rounded-3xl overflow-hidden">
+        <div class="px-8 py-6 border-b flex justify-between"><h3 class="font-bold text-xl">All 32 Cards • Status</h3><button onclick="hideReviewAllModal()" class="text-3xl">×</button></div>
+        <div id="card-list" class="max-h-[420px] overflow-auto p-4 space-y-2"></div>
+        <div class="p-4"><button onclick="hideReviewAllModal()" class="w-full py-4 bg-zinc-800 rounded-3xl">CLOSE</button></div>
+    </div>
+</div>
+
+<script>
+const originalCards=[
+{front:"What is the Physical Layer (OSI Layer 1)?",back:"Lowest layer that deals with physical connection between devices and transmission of raw bit streams. Defines mechanical, electrical, functional, and procedural specs."},
+{front:"Key Functions of Physical Layer - A",back:"Physical & Mechanical Specifications: topology (bus/star/mesh/ring), connectors (RJ45), pin assignments, NIC characteristics."},
+{front:"Key Functions of Physical Layer - B",back:"Data Encoding & Signaling: Converts frames to binary bits, generates electrical/optical/radio signals (e.g., laptop Ethernet card)."},
+{front:"Key Functions of Physical Layer - C",back:"Bit Synchronization: Ensures sender/receiver clock timing using encoding schemes like Manchester."},
+{front:"Key Functions of Physical Layer - D",back:"Transmission & Reception: Serial bit-by-bit transmission, listens for addressed streams, decodes signals, passes to Data Link Layer."},
+{front:"Key Functions of Physical Layer - E",back:"Interface & Medium Specification: Defines device-medium interface, cable types, frequencies, point-to-point or multipoint."},
+{front:"Important Note about Physical Layer",back:"Does NOT perform error correction — only detects errors. Correction is handled by Data Link Layer."},
+{front:"Services Provided by Physical Layer to Upper Layer",back:"Establishes/releases physical connections, provides bit streams (physical service data units), provides connection endpoints."},
+{front:"Analog Signals",back:"Continuous waveforms with infinite values. Measured by amplitude, frequency, phase. Examples: human voice, AM/FM radio, traditional phone."},
+{front:"Digital Signals",back:"Discrete square waves representing 0 and 1 only. High noise immunity. Examples: computer data, modern Ethernet, CD/DVD."},
+{front:"Comparison: Analog vs Digital Signals",back:"Analog: continuous sine, infinite values, low noise immunity, lower bandwidth. Digital: discrete square, 0/1 only, high noise immunity, higher bandwidth."},
+{front:"Signal Properties",back:"Amplitude (strength in volts), Frequency (cycles/sec in Hz — higher = more data but less range), Phase (position relative to time zero), Wavelength (distance of one cycle)."},
+{front:"Transmission Impairment - Attenuation",back:"Loss of signal strength with distance. Caused by resistance/absorption. Solved by amplifiers/repeaters. Example: radio signal weakening."},
+{front:"Transmission Impairment - Distortion",back:"Change in signal shape. Caused by different frequencies traveling at different speeds. Affects composite signals."},
+{front:"Transmission Impairment - Noise",back:"Unwanted signals corrupting original. Types: Thermal (electron motion), Impulse (spikes ~10ms), Crosstalk (adjacent wires), Distorted Frequency."},
+{front:"Bit Error Rate (BER)",back:"Probability a bit is corrupted. Telephone: 1 in 10⁵, Shielded copper: 1 in 10¹²-10¹³, Fiber: 1 in 10¹⁶-10¹⁷."},
+{front:"Nyquist Theorem (Noiseless Channel)",back:"Max Data Rate = 2 × Bandwidth × log₂(L) bps (L = signal levels). Example: 3 kHz, 2 levels → 6000 bps."},
+{front:"Shannon's Theorem (Noisy Channel)",back:"Max Data Rate = Bandwidth × log₂(1 + SNR) bps. Example: 3 kHz, SNR 30 dB (1000) → ~30,000 bps."},
+{front:"Bandwidth vs Throughput",back:"Bandwidth: theoretical maximum (e.g., ISP advertises 100 Mbps). Throughput: actual achieved rate (e.g., only 80 Mbps at peak)."},
+{front:"Latency (Propagation Delay)",back:"Time for first bit to travel. Formula: Distance / Propagation speed. High bandwidth does NOT mean low latency (satellite example)."},
+{front:"Total Latency Formula",back:"TLatency = TPropagation + TTransmission + TQueue (TTransmission = size/bandwidth)."},
+{front:"Guided Media - Twisted Pair",back:"Two insulated copper wires twisted to reduce crosstalk. UTP (common Ethernet), STP (shielded). Categories: Cat5e (1 Gbps), Cat6 (10 Gbps). ~100m limit."},
+{front:"Guided Media - Coaxial Cable",back:"Inner conductor + insulation + braided shield. Used for Cable TV/internet. Better shielding, longer distance than twisted pair."},
+{front:"Guided Media - Fiber Optic",back:"Glass/plastic fibers carrying light pulses. Single-mode (long distance, laser), Multi-mode (short, LED). Immune to EMI, very high bandwidth, secure."},
+{front:"Unguided Media - Radio Waves",back:"3 kHz–1 GHz, omnidirectional, penetrate walls. Used for AM/FM radio, TV, cordless phones."},
+{front:"Unguided Media - Microwaves",back:"1–300 GHz, line-of-sight, directional. Used for satellite, cellular backhaul. Affected by rain fade."},
+{front:"Unguided Media - Infrared",back:"300 GHz–400 THz, short range, cannot penetrate walls. Used for remote controls. Secure within room."},
+{front:"WiFi",back:"IEEE 802.11 (2.4/5 GHz radio). 20–100m indoors. Access point + clients. Example: home/campus WiFi."},
+{front:"Satellite Communication",back:"Microwave relay in space. Orbits: GEO (36,000 km, fixed), MEO, LEO (Starlink). High latency in GEO (~500 ms). Covers remote areas."},
+{front:"Multiplexing",back:"Techniques to transmit multiple signals over one link. MUX combines, DEMUX separates. Improves efficiency."},
+{front:"FDM (Frequency-Division Multiplexing)",back:"Analog. Divides bandwidth into frequency bands + guard bands. Example: FM radio/TV stations."},
+{front:"TDM (Time-Division Multiplexing)",back:"Digital. Divides time into frames/slots. Synchronous (fixed slots), Statistical (dynamic). Example: T1/E1 lines."},
+{front:"Spread Spectrum",back:"Expands signal bandwidth for privacy/anti-jamming. Types: FHSS (Bluetooth — hops frequencies), DSSS (WiFi 802.11b, GPS)."},
+{front:"Circuit Switching",back:"Dedicated path established for entire session. Guaranteed bandwidth, no queuing. Example: traditional phone calls. Inefficient for bursty data."},
+{front:"Packet Switching",back:"Data broken into packets, routed independently (datagram) or via virtual circuit. No reservation, statistical sharing. Example: Internet (IP)."},
+{front:"Message Switching",back:"Entire message stored and forwarded as one unit. High delay, large storage needed. Historical (telegraph)."}
+]
+let deck=[]
+let statuses=new Array(originalCards.length).fill("not-studied")
+let current=0
+let flipped=false
+let shuffle=false
+let studyMode="all"
+
+function shuffleArray(arr){const shuffled=[...arr];for(let i=shuffled.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]]}return shuffled}
+function prepareDeck(){let indices=[...Array(originalCards.length).keys()];if(studyMode==="review") indices=indices.filter(i=>statuses[i]==="review");if(shuffle) indices=shuffleArray(indices);deck=indices;current=0;loadCard()}
+function loadCard(){let idx=deck[current];let card=originalCards[idx];document.getElementById("front-text").textContent=card.front;document.getElementById("back-text").innerHTML=card.back;document.getElementById("card-number").textContent=current+1;document.getElementById("total-cards").textContent=deck.length;document.getElementById("card-inner").classList.remove("flipped");flipped=false}
+function flipCard(){flipped=!flipped;document.getElementById("card-inner").classList.toggle("flipped")}
+function nextCard(){if(current<deck.length-1){current++;loadCard()}}
+function prevCard(){if(current>0){current--;loadCard()}}
+function markKnown(){statuses[deck[current]]="known";updateProgress();setTimeout(()=>{if(current<deck.length-1)nextCard()},300)}
+function markReview(){statuses[deck[current]]="review";updateProgress();setTimeout(()=>{if(current<deck.length-1)nextCard()},300)}
+function updateProgress(){let known=statuses.filter(s=>s==="known").length;let review=statuses.filter(s=>s==="review").length;document.getElementById("known-count").textContent=known;document.getElementById("review-count").textContent=review}
+function toggleShuffle(){shuffle=document.getElementById("shuffle-toggle").checked;prepareDeck()}
+function toggleReviewMode(){studyMode=studyMode==="all"?"review":"all";document.getElementById("review-mode-text").textContent=studyMode==="all"?"ALL CARDS":"REVIEW ONLY";prepareDeck()}
+function showResults(){let known=statuses.filter(s=>s==="known").length;let review=statuses.filter(s=>s==="review").length;let total=originalCards.length;let percent=Math.round(((known+review)/total)*100);document.getElementById("modal-total").textContent=total;document.getElementById("modal-known").textContent=known;document.getElementById("modal-review").textContent=review;document.getElementById("motivational-text").innerHTML=percent>80?"Outstanding performance! You mastered Unit 2 🏆":"Great work! Keep reviewing the marked cards.";document.getElementById("trophy").classList.toggle("hidden",percent<=80);document.getElementById("results-modal").classList.remove("hidden")}
+function hideResultsModal(){document.getElementById("results-modal").classList.add("hidden")}
+function shareProgress(){let known=statuses.filter(s=>s==="known").length;let review=statuses.filter(s=>s==="review").length;let total=originalCards.length;let percent=Math.round(((known+review)/total)*100);navigator.clipboard.writeText(`Flashzy Pro Unit 2 Physical Layer: ${percent}% complete!\n✅ Known: ${known}\n📌 Review: ${review}\n\nReady for the next unit! #FlashzyPro`);alert("Progress copied to clipboard ✅")}
+function showReviewAllModal(){let html="";originalCards.forEach((c,i)=>{let badge=statuses[i]==="known"?`<span class="bg-emerald-500 text-white px-3 py-1 text-xs rounded-full">KNOWN</span>`:statuses[i]==="review"?`<span class="bg-amber-500 text-white px-3 py-1 text-xs rounded-full">REVIEW</span>`:`<span class="bg-zinc-700 text-zinc-400 px-3 py-1 text-xs rounded-full">NOT STUDIED</span>`;html+=`<div class="flex justify-between bg-zinc-800 p-4 rounded-2xl text-sm">${c.front}${badge}</div>`});document.getElementById("card-list").innerHTML=html;document.getElementById("review-all-modal").classList.remove("hidden")}
+function hideReviewAllModal(){document.getElementById("review-all-modal").classList.add("hidden")}
+function restartStudy(){hideResultsModal();statuses=new Array(originalCards.length).fill("not-studied");updateProgress();prepareDeck()}
+document.addEventListener("keydown",e=>{if(e.key==="ArrowRight") nextCard();if(e.key==="ArrowLeft") prevCard();if(e.key===" "){e.preventDefault();flipCard()}})
+prepareDeck()
+updateProgress()
+console.log("%c✅ Flashzy Pro - Unit 2 Physical Layer loaded successfully with your working flip CSS 🚀","color:#fde047;font-family:monospace")
+</script>
+</body>
+</html>
