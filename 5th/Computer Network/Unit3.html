@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flashzy Pro • Unit 3: The Data Link Layer</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+body{font-family:'Poppins',system-ui,sans-serif}
+.perspective{perspective:1400px}
+.card-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.4,.2,.2,1)}
+.card-inner.flipped{transform:rotateY(180deg)}
+.card-face{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:40px;text-align:center;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:24px}
+.card-front{background:linear-gradient(135deg,#27272a,#18181b)}
+.card-back{background:linear-gradient(135deg,#064e3b,#18181b);transform:rotateY(180deg)}
+</style>
+</head>
+<body class="bg-zinc-950 text-white min-h-screen flex items-center justify-center">
+<div class="max-w-4xl w-full px-4 py-8">
+<!-- HEADER -->
+<div class="flex justify-between items-center mb-10">
+    <div class="flex items-center gap-4">
+        <div class="w-12 h-12 bg-yellow-400 text-black rounded-2xl flex items-center justify-center text-3xl">🔗</div>
+        <div>
+            <h1 class="text-3xl font-bold">Flashzy Pro</h1>
+            <p class="text-yellow-400">Unit 3: The Data Link Layer</p>
+        </div>
+    </div>
+    <div class="flex items-center gap-6">
+        <div onclick="showReviewAllModal()" class="flex items-center gap-2 bg-zinc-900 px-5 py-2 rounded-3xl cursor-pointer">
+            <span class="text-xs uppercase text-zinc-400">Progress</span>
+            <span class="flex gap-4 text-sm">
+                <span>✅ <span id="known-count" class="font-bold">0</span></span>
+                <span>📌 <span id="review-count" class="font-bold">0</span></span>
+            </span>
+        </div>
+        <div class="flex items-center gap-3 bg-zinc-900 px-5 py-2 rounded-3xl">
+            <span class="text-xs text-zinc-400">SHUFFLE</span>
+            <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" id="shuffle-toggle" onchange="toggleShuffle()" class="sr-only peer">
+                <div class="w-11 h-6 bg-zinc-700 peer-focus:ring-4 peer-focus:ring-yellow-400 rounded-full peer peer-checked:bg-yellow-400"></div>
+            </label>
+        </div>
+        <button onclick="showResults()" class="bg-white text-black px-6 py-3 rounded-3xl font-semibold">📊 RESULTS</button>
+    </div>
+</div>
+<!-- CARD -->
+<div class="relative max-w-2xl mx-auto">
+    <div onclick="flipCard()" class="perspective h-[420px] cursor-pointer">
+        <div id="card-inner" class="card-inner border border-zinc-700 rounded-3xl">
+            <div class="card-face card-front">
+                <div class="text-yellow-400 text-3xl mb-6">📌</div>
+                <div id="front-text" class="text-3xl font-semibold max-w-md"></div>
+                <div class="absolute bottom-6 text-xs text-zinc-500 uppercase">Tap / Space to flip</div>
+            </div>
+            <div class="card-face card-back">
+                <div class="text-emerald-400 text-sm uppercase mb-4">ANSWER</div>
+                <div id="back-text" class="text-xl text-emerald-100 max-w-md leading-relaxed"></div>
+                <div class="absolute bottom-6 text-xs text-emerald-400/80 uppercase">Data Link Layer • Unit 3</div>
+            </div>
+        </div>
+    </div>
+    <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-zinc-900 text-yellow-400 text-xs px-5 py-1 rounded-full">
+        <span id="card-number">1</span>
+        <span class="text-zinc-600">/</span>
+        <span id="total-cards">32</span>
+    </div>
+</div>
+<!-- CONTROLS -->
+<div class="max-w-2xl mx-auto mt-10 flex justify-between items-center">
+    <button onclick="prevCard()" class="bg-zinc-900 px-6 py-3 rounded-3xl">← Prev</button>
+    <div class="flex gap-4">
+        <button onclick="markKnown();event.stopImmediatePropagation()" class="bg-emerald-500 px-6 py-3 rounded-3xl">✅ Known</button>
+        <button onclick="markReview();event.stopImmediatePropagation()" class="bg-amber-500 px-6 py-3 rounded-3xl">📌 Review</button>
+    </div>
+    <button onclick="nextCard()" class="bg-zinc-900 px-6 py-3 rounded-3xl">Next →</button>
+</div>
+<!-- Review Mode -->
+<div onclick="toggleReviewMode()" id="review-mode-btn" class="mx-auto mt-6 flex items-center gap-3 bg-zinc-900 hover:bg-zinc-800 px-8 py-3 rounded-3xl cursor-pointer text-sm font-medium">
+    <span id="review-mode-text">ALL CARDS</span>
+    <span class="text-amber-400">📌</span>
+</div>
+</div>
+
+<!-- RESULTS MODAL -->
+<div id="results-modal" onclick="if(event.target.id==='results-modal')hideResultsModal()" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+    <div onclick="event.stopImmediatePropagation()" class="bg-zinc-900 max-w-md w-full mx-4 rounded-3xl p-8">
+        <h2 class="text-3xl font-bold mb-6">Study Summary</h2>
+        <div class="grid grid-cols-3 gap-4 mb-8">
+            <div class="bg-zinc-800 p-6 rounded-3xl text-center"><div id="modal-total" class="text-5xl font-bold">32</div><div class="text-xs text-zinc-400">Total</div></div>
+            <div class="bg-emerald-900/30 border border-emerald-400 p-6 rounded-3xl text-center"><div id="modal-known" class="text-5xl font-bold text-emerald-400">0</div><div class="text-xs text-emerald-400">Known</div></div>
+            <div class="bg-amber-900/30 border border-amber-400 p-6 rounded-3xl text-center"><div id="modal-review" class="text-5xl font-bold text-amber-400">0</div><div class="text-xs text-amber-400">Review</div></div>
+        </div>
+        <div id="trophy" class="hidden text-center text-7xl mb-4">🏆</div>
+        <div id="motivational-text" class="italic text-center bg-zinc-800 p-6 rounded-3xl"></div>
+        <div class="flex gap-3 mt-8">
+            <button onclick="hideResultsModal();restartStudy()" class="flex-1 py-4 bg-zinc-800 rounded-3xl">RESTART</button>
+            <button onclick="shareProgress()" class="flex-1 py-4 bg-yellow-400 text-black rounded-3xl font-semibold">SHARE PROGRESS</button>
+        </div>
+    </div>
+</div>
+
+<!-- REVIEW ALL MODAL -->
+<div id="review-all-modal" onclick="if(event.target.id==='review-all-modal')hideReviewAllModal()" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+    <div onclick="event.stopImmediatePropagation()" class="bg-zinc-900 w-full max-w-lg mx-4 rounded-3xl overflow-hidden">
+        <div class="px-8 py-6 border-b flex justify-between"><h3 class="font-bold text-xl">All 32 Cards • Status</h3><button onclick="hideReviewAllModal()" class="text-3xl">×</button></div>
+        <div id="card-list" class="max-h-[420px] overflow-auto p-4 space-y-2"></div>
+        <div class="p-4"><button onclick="hideReviewAllModal()" class="w-full py-4 bg-zinc-800 rounded-3xl">CLOSE</button></div>
+    </div>
+</div>
+
+<script>
+const originalCards=[
+{front:"What is the Data Link Layer (Layer 2)?",back:"Provides node-to-node data transfer between directly connected nodes. PDU = Frame. Interfaces Physical Layer and Network Layer."},
+{front:"Primary Functions of DLL",back:"Framing, Physical Addressing (MAC), Error Detection/Correction, Flow Control, Access Control, Reliable Delivery."},
+{front:"DLL Sublayers (IEEE 802)",back:"LLC (Logical Link Control): interfaces Network Layer, multiplexing, flow/error control. MAC (Media Access Control): physical addressing, access control, frame formats."},
+{front:"Devices at Data Link Layer",back:"Switch (MAC-based forwarding), Bridge (connects LANs), NIC (adds MAC), Wireless Access Point."},
+{front:"Framing (Character-Oriented)",back:"Uses 8-bit flag (01111110). Byte stuffing adds escape character for flag in data. Example: PPP."},
+{front:"Framing (Bit-Oriented)",back:"Uses flag 01111110. Bit stuffing: insert 0 after five 1s. Ensures flag never appears in data. Example: HDLC."},
+{front:"Flow Control Methods",back:"Stop-and-Wait (one frame at a time), Sliding Window (multiple frames before ACK)."},
+{front:"Error Control Approaches",back:"Discard Only (Ethernet), Discard with Acknowledgment + Retransmission (HDLC). Uses ARQ."},
+{front:"Piggybacking",back:"Combine data + ACK in same frame. Reduces separate ACK frames. Used in HDLC/PPP."},
+{front:"Error Types",back:"Single-bit error (one bit flipped), Burst error (multiple contiguous/non-contiguous bits)."},
+{front:"Error Detection - Parity Check",back:"Add one bit for even/odd number of 1s. Detects odd errors only; fails on even errors."},
+{front:"Error Detection - CRC",back:"Data treated as polynomial ÷ generator polynomial. Append remainder. Receiver checks remainder = 0. Example: CRC-32 in Ethernet."},
+{front:"Error Detection - Checksum",back:"Sum data segments (1's complement), complement result. Used in IP/TCP/UDP."},
+{front:"Hamming Code",back:"Redundant parity bits at powers of 2. Corrects single-bit errors, detects double-bit errors."},
+{front:"HDLC Overview",back:"Bit-oriented protocol by ISO. Supports point-to-point/multipoint. Modes: NRM, ABM, ARM."},
+{front:"HDLC Frame Types",back:"I-Frames (user data + ACK), S-Frames (flow/error control: RR, RNR, REJ, SREJ), U-Frames (link management)."},
+{front:"PPP Overview",back:"Point-to-point protocol for dial-up/DSL. Supports multiple Layer 3 protocols. Uses LCP (link control) + NCPs."},
+{front:"PPP Operation Phases",back:"1. Link Dead 2. Establishment (LCP) 3. Authentication (PAP/CHAP) 4. Network Config (NCP) 5. Link Open 6. Termination."},
+{front:"Channel Allocation Problem",back:"How to fairly allocate shared broadcast channel among multiple users (MAC problem)."},
+{front:"Static vs Dynamic Channel Allocation",back:"Static (fixed, FDM/TDM — simple but wasteful for bursty traffic). Dynamic (on-demand — efficient but overhead)."},
+{front:"Pure ALOHA",back:"Transmit anytime. Vulnerable period = 2×frame time. Max throughput 18.4%."},
+{front:"Slotted ALOHA",back:"Transmit only at slot start. Vulnerable period = 1 slot. Max throughput 36.8%."},
+{front:"CSMA Variants",back:"1-persistent (transmit immediately if idle), Non-persistent (random backoff), p-persistent (probabilistic)."},
+{front:"CSMA/CD",back:"Carrier Sense + Collision Detection. Abort on collision, jam signal, binary exponential backoff. Used in Ethernet."},
+{front:"CSMA/CA",back:"Carrier Sense + Collision Avoidance (RTS/CTS, ACK). Used in Wi-Fi (hidden terminal problem)."},
+{front:"Token Passing",back:"Token circulates; only token holder transmits. Deterministic, no collisions. Example: Token Ring/FDDI."},
+{front:"Ethernet Frame Structure",back:"Preamble + SFD + Dest MAC + Src MAC + Length/Type + Data (46-1500) + Pad + FCS (CRC-32). Min 64 bytes."},
+{front:"Ethernet Standards",back:"10BASE-T (10 Mbps), 100BASE-TX (Fast), 1000BASE-T (Gigabit), 10GBASE-T, etc."},
+{front:"FDDI",back:"100 Mbps token-passing fiber ring with dual counter-rotating rings for self-healing. Used in campus backbones."},
+{front:"IEEE 802.11 (Wi-Fi) Features",back:"CSMA/CA, DCF, RTS/CTS, fragmentation, power management. Standards: 802.11n (600 Mbps), ax (Wi-Fi 6), be (Wi-Fi 7)."},
+{front:"Bluetooth Architecture",back:"Piconet (1 master + 7 slaves). Scatternet (interconnected piconets). Uses frequency hopping."},
+{front:"VLAN (IEEE 802.1Q)",back:"Logical broadcast domains independent of physical location. Uses 802.1Q tagging (VID 1-4094). Benefits: security, broadcast control, flexibility."},
+{front:"Multiple Access Comparison Summary",back:"Random (ALOHA/CSMA: collisions possible), Controlled (Token/Polling: no collisions, deterministic), Channelization (FDMA/TDMA/CDMA: no collisions)."}
+]
+let deck=[]
+let statuses=new Array(originalCards.length).fill("not-studied")
+let current=0
+let flipped=false
+let shuffle=false
+let studyMode="all"
+
+function shuffleArray(arr){const shuffled=[...arr];for(let i=shuffled.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]]}return shuffled}
+function prepareDeck(){let indices=[...Array(originalCards.length).keys()];if(studyMode==="review") indices=indices.filter(i=>statuses[i]==="review");if(shuffle) indices=shuffleArray(indices);deck=indices;current=0;loadCard()}
+function loadCard(){let idx=deck[current];let card=originalCards[idx];document.getElementById("front-text").textContent=card.front;document.getElementById("back-text").innerHTML=card.back;document.getElementById("card-number").textContent=current+1;document.getElementById("total-cards").textContent=deck.length;document.getElementById("card-inner").classList.remove("flipped");flipped=false}
+function flipCard(){flipped=!flipped;document.getElementById("card-inner").classList.toggle("flipped")}
+function nextCard(){if(current<deck.length-1){current++;loadCard()}}
+function prevCard(){if(current>0){current--;loadCard()}}
+function markKnown(){statuses[deck[current]]="known";updateProgress();setTimeout(()=>{if(current<deck.length-1)nextCard()},300)}
+function markReview(){statuses[deck[current]]="review";updateProgress();setTimeout(()=>{if(current<deck.length-1)nextCard()},300)}
+function updateProgress(){let known=statuses.filter(s=>s==="known").length;let review=statuses.filter(s=>s==="review").length;document.getElementById("known-count").textContent=known;document.getElementById("review-count").textContent=review}
+function toggleShuffle(){shuffle=document.getElementById("shuffle-toggle").checked;prepareDeck()}
+function toggleReviewMode(){studyMode=studyMode==="all"?"review":"all";document.getElementById("review-mode-text").textContent=studyMode==="all"?"ALL CARDS":"REVIEW ONLY";prepareDeck()}
+function showResults(){let known=statuses.filter(s=>s==="known").length;let review=statuses.filter(s=>s==="review").length;let total=originalCards.length;let percent=Math.round(((known+review)/total)*100);document.getElementById("modal-total").textContent=total;document.getElementById("modal-known").textContent=known;document.getElementById("modal-review").textContent=review;document.getElementById("motivational-text").innerHTML=percent>80?"Outstanding performance! You mastered Unit 3 🏆":"Great work! Keep reviewing the marked cards.";document.getElementById("trophy").classList.toggle("hidden",percent<=80);document.getElementById("results-modal").classList.remove("hidden")}
+function hideResultsModal(){document.getElementById("results-modal").classList.add("hidden")}
+function shareProgress(){let known=statuses.filter(s=>s==="known").length;let review=statuses.filter(s=>s==="review").length;let total=originalCards.length;let percent=Math.round(((known+review)/total)*100);navigator.clipboard.writeText(`Flashzy Pro Unit 3 Data Link Layer: ${percent}% complete!\n✅ Known: ${known}\n📌 Review: ${review}\n\nReady for the next unit! #FlashzyPro`);alert("Progress copied to clipboard ✅")}
+function showReviewAllModal(){let html="";originalCards.forEach((c,i)=>{let badge=statuses[i]==="known"?`<span class="bg-emerald-500 text-white px-3 py-1 text-xs rounded-full">KNOWN</span>`:statuses[i]==="review"?`<span class="bg-amber-500 text-white px-3 py-1 text-xs rounded-full">REVIEW</span>`:`<span class="bg-zinc-700 text-zinc-400 px-3 py-1 text-xs rounded-full">NOT STUDIED</span>`;html+=`<div class="flex justify-between bg-zinc-800 p-4 rounded-2xl text-sm">${c.front}${badge}</div>`});document.getElementById("card-list").innerHTML=html;document.getElementById("review-all-modal").classList.remove("hidden")}
+function hideReviewAllModal(){document.getElementById("review-all-modal").classList.add("hidden")}
+function restartStudy(){hideResultsModal();statuses=new Array(originalCards.length).fill("not-studied");updateProgress();prepareDeck()}
+document.addEventListener("keydown",e=>{if(e.key==="ArrowRight") nextCard();if(e.key==="ArrowLeft") prevCard();if(e.key===" "){e.preventDefault();flipCard()}})
+prepareDeck()
+updateProgress()
+console.log("%c✅ Flashzy Pro - Unit 3 Data Link Layer loaded successfully with your working flip CSS 🚀","color:#fde047;font-family:monospace")
+</script>
+</body>
+</html>
