@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashzy Pro • Unit 1: Introduction</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+        
+        .tail-container {
+            font-family: 'Poppins', system_ui, sans-serif;
+        }
+        
+        .perspective {
+            perspective: 1600px;
+            -webkit-perspective: 1600px;
+        }
+        
+        .card-inner {
+            transition: transform 0.75s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transform-style: preserve-3d;
+            -webkit-transform-style: preserve-3d;
+            will-change: transform;
+        }
+        
+        .card-inner.flipped {
+            transform: rotateY(180deg) !important;
+            -webkit-transform: rotateY(180deg) !important;
+        }
+        
+        .card-face {
+            position: absolute;
+            inset: 0;
+            backface-visibility: hidden !important;
+            -webkit-backface-visibility: hidden !important;
+            box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.5);
+        }
+        
+        .card-front {
+            transform: rotateY(0deg);
+        }
+        
+        .card-back {
+            transform: rotateY(180deg);
+        }
+        
+        .mirror-fix {
+            transform: none !important;
+        }
+    </style>
+</head>
+<body class="tail-container bg-zinc-950 text-white min-h-screen flex items-center justify-center">
+    <div class="max-w-4xl mx-auto w-full px-4 py-8">
+        <!-- HEADER -->
+        <div class="flex items-center justify-between mb-8">
+            <div class="flex items-center gap-x-4">
+                <div class="w-12 h-12 bg-yellow-400 text-zinc-950 rounded-2xl flex items-center justify-center text-4xl shadow-xl">🎬</div>
+                <div>
+                    <h1 class="text-4xl font-bold tracking-tighter">Flashzy Pro</h1>
+                    <p class="text-yellow-400 text-lg font-medium">Unit 1: Introduction (6 Hrs)</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-x-6">
+                <div onclick="showReviewAllModal()" class="flex items-center gap-x-2 bg-zinc-900 hover:bg-zinc-800 px-5 py-2 rounded-3xl cursor-pointer transition-colors">
+                    <div class="text-xs uppercase tracking-widest font-medium text-zinc-400">PROGRESS</div>
+                    <div class="flex items-center gap-x-4 text-sm">
+                        <span class="flex items-center gap-x-1"><span class="text-emerald-400">✅</span><span id="known-count" class="font-semibold">0</span></span>
+                        <span class="flex items-center gap-x-1"><span class="text-amber-400">📌</span><span id="review-count" class="font-semibold">0</span></span>
+                    </div>
+                </div>
+                
+                <div class="flex items-center gap-x-3 bg-zinc-900 px-5 py-2 rounded-3xl">
+                    <span class="text-xs font-medium text-zinc-400">SHUFFLE</span>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="shuffle-toggle" onchange="toggleShuffle()" class="sr-only peer">
+                        <div class="w-11 h-6 bg-zinc-700 rounded-full peer-focus:ring-4 peer-focus:ring-yellow-400/30 peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-yellow-400"></div>
+                    </label>
+                </div>
+                
+                <button onclick="showResults()" class="flex items-center gap-x-2 bg-white text-zinc-950 px-6 py-3 rounded-3xl font-semibold text-sm hover:scale-105 active:scale-95 shadow-lg transition-all">
+                    📊 RESULTS
+                </button>
+            </div>
+        </div>
+
+        <!-- CARD CONTAINER -->
+        <div class="relative max-w-2xl mx-auto">
+            <div id="card-container" onclick="flipCard()" class="perspective h-[440px] cursor-pointer mx-auto">
+                <div id="card-inner" class="card-inner relative w-full h-full rounded-3xl overflow-hidden border border-zinc-700">
+                    
+                    <!-- FRONT -->
+                    <div id="card-front" class="card-face card-front bg-gradient-to-br from-zinc-800 to-zinc-900 flex flex-col items-center justify-center p-10 text-center rounded-3xl">
+                        <div class="w-16 h-16 bg-yellow-400/10 text-yellow-400 rounded-2xl flex items-center justify-center text-4xl mb-8">📌</div>
+                        <div id="front-text" class="text-3xl font-semibold leading-tight text-white max-w-md"></div>
+                        <div class="absolute bottom-8 text-xs uppercase tracking-widest text-zinc-500">TAP / SPACE TO FLIP</div>
+                    </div>
+                    
+                    <!-- BACK -->
+                    <div id="card-back" class="card-face card-back bg-gradient-to-br from-emerald-900 to-zinc-900 flex flex-col items-center justify-center p-10 text-center rounded-3xl">
+                        <div class="text-emerald-400 text-sm uppercase tracking-widest font-medium mb-4">ANSWER</div>
+                        <div id="back-text" class="text-xl leading-relaxed text-emerald-100 max-w-md"></div>
+                        <div class="absolute bottom-8 text-[10px] uppercase tracking-widest text-emerald-400/80">Unit 1 • Multimedia Introduction</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- CARD NUMBER -->
+            <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-zinc-900 text-yellow-400 text-xs font-bold px-6 py-1.5 rounded-3xl shadow-2xl border border-yellow-400/30 flex items-center gap-x-2">
+                <span id="card-number">1</span>
+                <span class="text-zinc-600">OF</span>
+                <span id="total-cards">30</span>
+            </div>
+        </div>
+
+        <!-- CONTROLS -->
+        <div class="max-w-2xl mx-auto mt-10 flex flex-col gap-6">
+            <div class="flex justify-between items-center">
+                <button onclick="prevCard()" class="flex items-center gap-x-3 bg-zinc-900 hover:bg-zinc-800 px-8 py-4 rounded-3xl font-medium text-sm transition-all active:scale-95">← PREV</button>
+                
+                <div class="flex gap-x-4">
+                    <button onclick="markKnown(); event.stopImmediatePropagation()" class="flex items-center gap-x-2 bg-emerald-500 hover:bg-emerald-600 px-8 py-4 rounded-3xl font-semibold text-sm transition-all active:scale-95">
+                        ✅ KNOWN
+                    </button>
+                    <button onclick="markReview(); event.stopImmediatePropagation()" class="flex items-center gap-x-2 bg-amber-500 hover:bg-amber-600 px-8 py-4 rounded-3xl font-semibold text-sm transition-all active:scale-95">
+                        📌 REVIEW
+                    </button>
+                </div>
+                
+                <button onclick="nextCard()" class="flex items-center gap-x-3 bg-zinc-900 hover:bg-zinc-800 px-8 py-4 rounded-3xl font-medium text-sm transition-all active:scale-95">NEXT →</button>
+            </div>
+            
+            <div onclick="toggleReviewMode()" id="review-mode-btn" class="mx-auto flex items-center gap-x-3 bg-zinc-900 hover:bg-zinc-800 px-8 py-3 rounded-3xl cursor-pointer text-sm font-medium transition-all">
+                <span id="review-mode-text">ALL CARDS</span>
+                <span class="text-amber-400">📌</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- RESULTS MODAL -->
+    <div id="results-modal" onclick="if(event.target.id==='results-modal') hideResultsModal()" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+        <div onclick="event.stopImmediatePropagation()" class="bg-zinc-900 max-w-md w-full mx-4 rounded-3xl p-8">
+            <div class="flex justify-between mb-6">
+                <h2 class="text-3xl font-bold">Your Results</h2>
+                <button onclick="hideResultsModal()" class="text-4xl text-zinc-400">×</button>
+            </div>
+            <div class="grid grid-cols-3 gap-4">
+                <div class="bg-zinc-800 rounded-3xl p-6 text-center">
+                    <div id="modal-total" class="text-5xl font-bold">30</div>
+                    <div class="text-xs text-zinc-400">TOTAL</div>
+                </div>
+                <div class="bg-emerald-900/30 border border-emerald-400 rounded-3xl p-6 text-center">
+                    <div id="modal-known" class="text-5xl font-bold text-emerald-400">0</div>
+                    <div class="text-xs text-emerald-400">KNOWN</div>
+                </div>
+                <div class="bg-amber-900/30 border border-amber-400 rounded-3xl p-6 text-center">
+                    <div id="modal-review" class="text-5xl font-bold text-amber-400">0</div>
+                    <div class="text-xs text-amber-400">REVIEW</div>
+                </div>
+            </div>
+            <div class="mt-8">
+                <div class="flex justify-between text-sm mb-2">
+                    <span>Completion</span>
+                    <span id="modal-completion" class="font-bold text-yellow-400">0%</span>
+                </div>
+                <div class="h-3 bg-zinc-800 rounded-full overflow-hidden">
+                    <div id="modal-progress-bar" class="h-3 bg-gradient-to-r from-yellow-400 to-emerald-400 rounded-full w-0 transition-all"></div>
+                </div>
+            </div>
+            <div id="trophy" class="hidden text-center my-6">
+                <div class="text-7xl">🏆</div>
+                <p class="text-yellow-300 font-medium">Amazing work!</p>
+            </div>
+            <div id="motivational-text" class="italic text-center text-lg bg-zinc-800 border border-yellow-400/30 p-6 rounded-3xl"></div>
+            <div class="flex gap-3 mt-8">
+                <button onclick="hideResultsModal(); restartStudy()" class="flex-1 py-4 bg-zinc-800 rounded-3xl font-medium">RESTART</button>
+                <button onclick="shareProgress()" class="flex-1 py-4 bg-yellow-400 text-zinc-950 rounded-3xl font-semibold">SHARE</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- REVIEW ALL MODAL -->
+    <div id="review-all-modal" onclick="if(event.target.id==='review-all-modal') hideReviewAllModal()" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+        <div onclick="event.stopImmediatePropagation()" class="bg-zinc-900 w-full max-w-lg mx-4 rounded-3xl overflow-hidden">
+            <div class="p-6 border-b flex justify-between">
+                <h3 class="font-bold text-xl">All 30 Cards • Status</h3>
+                <button onclick="hideReviewAllModal()" class="text-3xl">×</button>
+            </div>
+            <div id="card-list" class="max-h-[440px] overflow-auto p-4 space-y-3"></div>
+            <div class="p-4 border-t">
+                <button onclick="hideReviewAllModal()" class="w-full py-4 bg-zinc-800 rounded-3xl font-medium">CLOSE</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const originalCards = [
+            { front: "What is Multimedia?", back: "The combination of multiple media elements (text, graphics, audio, video, and animation) controlled by a computer to convey information or create an experience." },
+            { front: "Multimedia in Education", back: "Interactive e-learning modules, virtual labs, online courses (e.g., Coursera, Byju's)." },
+            { front: "Multimedia in Business", back: "Corporate presentations, video conferencing (Zoom/Teams), product demos, virtual training." },
+            { front: "Multimedia in Entertainment", back: "Video games, streaming services (Netflix/YouTube), animated movies, special effects in films." },
+            { front: "Multimedia in Medicine", back: "3D visualization of organs for surgery simulation, telemedicine, patient education systems." },
+            { front: "Multimedia in Government", back: "Interactive kiosks for public information, digital signage, training for defense personnel using simulators." },
+            { front: "Multimedia in Advertising", back: "Interactive billboards, online banner ads, product catalogues." },
+            { front: "Global Structure of Multimedia", back: "Elements organized and linked together in a non-linear fashion, much like the World Wide Web. Based on Hypermedia." },
+            { front: "Hypertext", back: "A non-linear, linked structure of text (e.g., Wikipedia articles with blue hyperlinks)." },
+            { front: "Hypermedia", back: "Extension of hypertext that includes links to other media like images, sound, and video." },
+            { front: "Nodes", back: "The fundamental units of information (a single page, a paragraph, an image)." },
+            { front: "Links", back: "The connections or references between nodes (hyperlinks)." },
+            { front: "Anchors", back: "The starting and ending points of a link (the clickable text or image)." },
+            { front: "Perception Medium", back: "How humans perceive information: Text (sight), Audio (hearing), Tactile (touch e.g. vibration)." },
+            { front: "Representation Medium", back: "Internal computer format: Text (ASCII, Unicode), Image (JPEG, PNG, GIF), Audio (MP3, WAV)." },
+            { front: "Presentation Medium", back: "Input/output tools: Keyboard, mouse, microphone, camera, monitor, speaker, printer." },
+            { front: "Storage Medium", back: "Physical devices that hold the data: HDD, SSD, CD-ROM, USB flash drive." },
+            { front: "Transmission Medium", back: "Physical channel for data transfer: Copper wire (Ethernet), Fiber optic, Radio waves (Wi-Fi)." },
+            { front: "Multimedia System", back: "A computer-based system capable of creating, integrating, storing, retrieving, and presenting two or more types of media." },
+            { front: "Computer-Controlled", back: "All operations from storage to presentation are managed by a computer." },
+            { front: "Integration", back: "All media elements are combined and handled as a single cohesive unit." },
+            { front: "Interactivity", back: "User has control over the media (pause, play, navigate, choose options)." },
+            { front: "Digital Representation", back: "All media stored and processed in digital (binary) form." },
+            { front: "Very High Processing Power", back: "Requires powerful CPU/GPU for encoding/decoding (e.g. 4K video rendering)." },
+            { front: "Large Storage & High-Speed Access", back: "Multimedia files are huge – needs large fast drives." },
+            { front: "High-Speed Network", back: "Essential for streaming (e.g. fiber optics for Netflix at 25 Mbps+)." },
+            { front: "Multitasking OS", back: "Handles multiple tasks at once (audio in background + video rendering)." },
+            { front: "Specialized Hardware & Software", back: "Sound cards, GPUs, codecs, media players required." },
+            { front: "Challenge: Synchronization", back: "Media streams must be perfectly timed (e.g. audio lip-sync with video)." },
+            { front: "Challenge: Data Management", back: "Storing, indexing and retrieving massive unstructured multimedia data (e.g. YouTube's billions of hours)." }
+        ];
+
+        let deck = [];
+        let currentDeckIndex = 0;
+        let statuses = new Array(30).fill("not-studied");
+        let isFlipped = false;
+        let shuffleMode = false;
+        let studyMode = "all";
+
+        function shuffleArray(arr) {
+            const a = [...arr];
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+            }
+            return a;
+        }
+
+        function prepareDeck() {
+            let indices = Array.from({length: 30}, (_, i) => i);
+            if (studyMode === "review") {
+                indices = indices.filter(i => statuses[i] === "review");
+                if (indices.length === 0) {
+                    alert("No cards marked for review yet!");
+                    studyMode = "all";
+                    document.getElementById("review-mode-text").textContent = "ALL CARDS";
+                    indices = Array.from({length: 30}, (_, i) => i);
+                }
+            }
+            if (shuffleMode) indices = shuffleArray(indices);
+            deck = indices;
+            currentDeckIndex = 0;
+            loadCurrentCard();
+        }
+
+        function loadCurrentCard() {
+            if (deck.length === 0) return;
+            const idx = deck[currentDeckIndex];
+            const card = originalCards[idx];
+            
+            document.getElementById("front-text").textContent = card.front;
+            document.getElementById("back-text").innerHTML = card.back;
+            
+            isFlipped = false;
+            document.getElementById("card-inner").classList.remove("flipped");
+            
+            document.getElementById("card-number").textContent = currentDeckIndex + 1;
+            document.getElementById("total-cards").textContent = deck.length;
+        }
+
+        function flipCard() {
+            isFlipped = !isFlipped;
+            const inner = document.getElementById("card-inner");
+            if (isFlipped) {
+                inner.classList.add("flipped");
+            } else {
+                inner.classList.remove("flipped");
+            }
+        }
+
+        function nextCard() {
+            if (currentDeckIndex < deck.length - 1) {
+                currentDeckIndex++;
+                loadCurrentCard();
+            }
+        }
+
+        function prevCard() {
+            if (currentDeckIndex > 0) {
+                currentDeckIndex--;
+                loadCurrentCard();
+            }
+        }
+
+        function markKnown() {
+            if (deck.length === 0) return;
+            statuses[deck[currentDeckIndex]] = "known";
+            updateProgress();
+            setTimeout(() => { if (currentDeckIndex < deck.length - 1) nextCard(); }, 350);
+        }
+
+        function markReview() {
+            if (deck.length === 0) return;
+            statuses[deck[currentDeckIndex]] = "review";
+            updateProgress();
+            setTimeout(() => { if (currentDeckIndex < deck.length - 1) nextCard(); }, 350);
+        }
+
+        function updateProgress() {
+            const known = statuses.filter(s => s === "known").length;
+            const review = statuses.filter(s => s === "review").length;
+            document.getElementById("known-count").textContent = known;
+            document.getElementById("review-count").textContent = review;
+        }
+
+        function toggleShuffle() {
+            shuffleMode = !shuffleMode;
+            prepareDeck();
+        }
+
+        function toggleReviewMode() {
+            studyMode = studyMode === "all" ? "review" : "all";
+            document.getElementById("review-mode-text").textContent = studyMode === "all" ? "ALL CARDS" : "REVIEW ONLY";
+            prepareDeck();
+        }
+
+        function handleKeyboard(e) {
+            if (!document.getElementById("results-modal").classList.contains("hidden") || 
+                !document.getElementById("review-all-modal").classList.contains("hidden")) return;
+            
+            if (e.key === "ArrowRight") nextCard();
+            else if (e.key === "ArrowLeft") prevCard();
+            else if (e.key === " ") {
+                e.preventDefault();
+                flipCard();
+            }
+        }
+
+        function showResults() {
+            const known = statuses.filter(s => s === "known").length;
+            const review = statuses.filter(s => s === "review").length;
+            const completion = Math.round(((known + review) / 30) * 100);
+            
+            document.getElementById("modal-total").textContent = 30;
+            document.getElementById("modal-known").textContent = known;
+            document.getElementById("modal-review").textContent = review;
+            document.getElementById("modal-completion").textContent = completion + "%";
+            document.getElementById("modal-progress-bar").style.width = completion + "%";
+            
+            document.getElementById("trophy").classList.toggle("hidden", completion <= 80);
+            
+            let msg = completion > 90 ? "Legendary performance! You mastered Unit 1 🎉" :
+                      completion > 70 ? "Excellent! You're ready for advanced topics." :
+                      completion > 40 ? "Solid effort! Keep reviewing the marked cards." :
+                      "Great start! Every card you study makes you stronger.";
+            document.getElementById("motivational-text").textContent = msg;
+            
+            document.getElementById("results-modal").classList.remove("hidden");
+            document.getElementById("results-modal").classList.add("flex");
+        }
+
+        function hideResultsModal() {
+            const m = document.getElementById("results-modal");
+            m.classList.add("hidden");
+            m.classList.remove("flex");
+        }
+
+        function shareProgress() {
+            const known = statuses.filter(s => s === "known").length;
+            const review = statuses.filter(s => s === "review").length;
+            const comp = Math.round(((known + review) / 30) * 100);
+            const text = `I just completed ${comp}% of Flashzy Pro Unit 1: Introduction!\n✅ Known: ${known} | 📌 Review: ${review}\n\nReady for more! #FlashzyPro`;
+            navigator.clipboard.writeText(text).then(() => alert("✅ Progress copied to clipboard!"));
+        }
+
+        function showReviewAllModal() {
+            const container = document.getElementById("card-list");
+            container.innerHTML = "";
+            originalCards.forEach((card, i) => {
+                const status = statuses[i];
+                let badge = status === "known" ? `<span class="px-3 py-1 text-[10px] bg-emerald-500 rounded-full">KNOWN</span>` :
+                            status === "review" ? `<span class="px-3 py-1 text-[10px] bg-amber-500 rounded-full">REVIEW</span>` :
+                            `<span class="px-3 py-1 text-[10px] bg-zinc-700 text-zinc-400 rounded-full">NOT STUDIED</span>`;
+                
+                const div = document.createElement("div");
+                div.className = "flex justify-between items-center bg-zinc-800 hover:bg-zinc-700 px-6 py-4 rounded-2xl text-sm";
+                div.innerHTML = `<div class="flex-1">${card.front}</div>${badge}`;
+                container.appendChild(div);
+            });
+            document.getElementById("review-all-modal").classList.remove("hidden");
+            document.getElementById("review-all-modal").classList.add("flex");
+        }
+
+        function hideReviewAllModal() {
+            const m = document.getElementById("review-all-modal");
+            m.classList.add("hidden");
+            m.classList.remove("flex");
+        }
+
+        function restartStudy() {
+            hideResultsModal();
+            statuses = new Array(30).fill("not-studied");
+            updateProgress();
+            prepareDeck();
+        }
+
+        function initializeApp() {
+            prepareDeck();
+            updateProgress();
+            document.addEventListener("keydown", handleKeyboard);
+            
+            // Extra force to fix any browser rendering glitch
+            setTimeout(() => {
+                document.getElementById("card-inner").style.transition = "transform 0.75s cubic-bezier(0.25, 0.46, 0.45, 0.94)";
+            }, 100);
+            
+            console.log("%c✅ Flashzy Pro loaded! Mirror issue FIXED with stronger 3D CSS.", "color:#fde047; font-family:monospace");
+        }
+
+        window.onload = initializeApp;
+    </script>
+</body>
+</html>
