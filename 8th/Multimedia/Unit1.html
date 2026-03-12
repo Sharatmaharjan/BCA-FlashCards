@@ -3,56 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Flashzy Pro • Unit 1: Introduction</title>
-
 <script src="https://cdn.tailwindcss.com"></script>
-
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
-
-body{
-font-family:'Poppins',system-ui,sans-serif;
-}
-
-.perspective{
-perspective:1400px;
-}
-
-.card-inner{
-position:relative;
-width:100%;
-height:100%;
-transform-style:preserve-3d;
-transition:transform .7s cubic-bezier(.4,.2,.2,1);
-}
-
-.card-inner.flipped{
-transform:rotateY(180deg);
-}
-
-.card-face{
-position:absolute;
-inset:0;
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-padding:40px;
-text-align:center;
-backface-visibility:hidden;
--webkit-backface-visibility:hidden;
-border-radius:24px;
-}
-
-.card-front{
-background:linear-gradient(135deg,#27272a,#18181b);
-}
-
-.card-back{
-background:linear-gradient(135deg,#064e3b,#18181b);
-transform:rotateY(180deg);
-}
+body{font-family:'Poppins',system-ui,sans-serif}
+.perspective{perspective:1400px}
+.card-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.4,.2,.2,1)}
+.card-inner.flipped{transform:rotateY(180deg)}
+.card-face{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:40px;text-align:center;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:24px}
+.card-front{background:linear-gradient(135deg,#27272a,#18181b)}
+.card-back{background:linear-gradient(135deg,#064e3b,#18181b);transform:rotateY(180deg)}
 </style>
 </head>
 
@@ -60,13 +21,10 @@ transform:rotateY(180deg);
 
 <div class="max-w-4xl w-full px-4 py-8">
 
-<!-- HEADER -->
-
 <div class="flex justify-between items-center mb-10">
 
 <div class="flex items-center gap-4">
 <div class="w-12 h-12 bg-yellow-400 text-black rounded-2xl flex items-center justify-center text-3xl">🎬</div>
-
 <div>
 <h1 class="text-3xl font-bold">Flashzy Pro</h1>
 <p class="text-yellow-400">Unit 1: Introduction</p>
@@ -74,22 +32,14 @@ transform:rotateY(180deg);
 </div>
 
 <div class="flex items-center gap-4">
-
 <div class="flex items-center gap-2 bg-zinc-900 px-4 py-2 rounded-3xl">
 <span class="text-sm text-zinc-400">Shuffle</span>
-<input type="checkbox" onchange="toggleShuffle()" id="shuffle-toggle">
+<input type="checkbox" id="shuffle-toggle" onchange="toggleShuffle()">
 </div>
-
-<button onclick="showResults()" class="bg-white text-black px-5 py-2 rounded-3xl font-semibold">
-📊 Results
-</button>
-
+<button onclick="showResults()" class="bg-white text-black px-5 py-2 rounded-3xl font-semibold">📊 Results</button>
 </div>
 
 </div>
-
-
-<!-- CARD -->
 
 <div class="relative max-w-2xl mx-auto">
 
@@ -97,80 +47,43 @@ transform:rotateY(180deg);
 
 <div id="card-inner" class="card-inner border border-zinc-700 rounded-3xl">
 
-<!-- FRONT -->
-
 <div class="card-face card-front">
-
 <div class="text-yellow-400 text-3xl mb-6">📌</div>
-
 <div id="front-text" class="text-3xl font-semibold max-w-md"></div>
-
-<div class="absolute bottom-6 text-xs text-zinc-500 uppercase">
-Tap / Space to flip
+<div class="absolute bottom-6 text-xs text-zinc-500 uppercase">Tap / Space to flip</div>
 </div>
-
-</div>
-
-
-<!-- BACK -->
 
 <div class="card-face card-back">
-
-<div class="text-emerald-400 text-sm uppercase mb-4">
-Answer
-</div>
-
+<div class="text-emerald-400 text-sm uppercase mb-4">Answer</div>
 <div id="back-text" class="text-xl text-emerald-100 max-w-md leading-relaxed"></div>
-
-<div class="absolute bottom-6 text-xs text-emerald-400/80 uppercase">
-Multimedia Unit
-</div>
-
+<div class="absolute bottom-6 text-xs text-emerald-400/80 uppercase">Multimedia Unit</div>
 </div>
 
 </div>
 </div>
 
 <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-zinc-900 text-yellow-400 text-xs px-5 py-1 rounded-full">
-
 <span id="card-number">1</span>
 <span class="text-zinc-600">/</span>
 <span id="total-cards">30</span>
-
 </div>
 
 </div>
-
-
-<!-- CONTROLS -->
 
 <div class="max-w-2xl mx-auto mt-10 flex justify-between items-center">
 
-<button onclick="prevCard()" class="bg-zinc-900 px-6 py-3 rounded-3xl">
-← Prev
-</button>
+<button onclick="prevCard()" class="bg-zinc-900 px-6 py-3 rounded-3xl">← Prev</button>
 
 <div class="flex gap-4">
-
-<button onclick="markKnown();event.stopPropagation()" class="bg-emerald-500 px-6 py-3 rounded-3xl">
-✅ Known
-</button>
-
-<button onclick="markReview();event.stopPropagation()" class="bg-amber-500 px-6 py-3 rounded-3xl">
-📌 Review
-</button>
-
+<button onclick="markKnown();event.stopPropagation()" class="bg-emerald-500 px-6 py-3 rounded-3xl">✅ Known</button>
+<button onclick="markReview();event.stopPropagation()" class="bg-amber-500 px-6 py-3 rounded-3xl">📌 Review</button>
 </div>
 
-<button onclick="nextCard()" class="bg-zinc-900 px-6 py-3 rounded-3xl">
-Next →
-</button>
+<button onclick="nextCard()" class="bg-zinc-900 px-6 py-3 rounded-3xl">Next →</button>
 
 </div>
 
 </div>
-
-
 
 <script>
 
@@ -208,53 +121,41 @@ const originalCards=[
 ]
 
 let deck=[]
-let statuses=new Array(30).fill("not")
+let statuses=new Array(originalCards.length).fill("not")
 let current=0
 let flipped=false
 let shuffle=false
 
-function shuffleArray(a){
-for(let i=a.length-1;i>0;i--){
-let j=Math.floor(Math.random()*(i+1))
-[a[i],a[j]]=[a[j],a[i]]
+function shuffleArray(arr){
+const shuffled=[...arr]
+for(let i=shuffled.length-1;i>0;i--){
+const j=Math.floor(Math.random()*(i+1))
+;[shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]]
 }
-return a
+return shuffled
 }
 
 function prepareDeck(){
-
-deck=[...Array(30).keys()]
-
+deck=[...Array(originalCards.length).keys()]
 if(shuffle) deck=shuffleArray(deck)
-
 current=0
-
 loadCard()
 }
 
 function loadCard(){
-
 let idx=deck[current]
-
 let card=originalCards[idx]
-
 document.getElementById("front-text").textContent=card.front
 document.getElementById("back-text").textContent=card.back
-
 document.getElementById("card-number").textContent=current+1
 document.getElementById("total-cards").textContent=deck.length
-
 document.getElementById("card-inner").classList.remove("flipped")
-
 flipped=false
 }
 
 function flipCard(){
-
 flipped=!flipped
-
 document.getElementById("card-inner").classList.toggle("flipped")
-
 }
 
 function nextCard(){
@@ -282,44 +183,29 @@ setTimeout(nextCard,300)
 }
 
 function toggleShuffle(){
-shuffle=!shuffle
+shuffle=document.getElementById("shuffle-toggle").checked
 prepareDeck()
 }
 
 function showResults(){
-
 let known=statuses.filter(s=>s==="known").length
 let review=statuses.filter(s=>s==="review").length
-
-let percent=Math.round(((known+review)/30)*100)
-
-alert(
-"Study Results\n\n"+
-"Known: "+known+
-"\nReview: "+review+
-"\nCompletion: "+percent+"%"
-)
-
+let percent=Math.round(((known+review)/originalCards.length)*100)
+alert("Study Results\n\nKnown: "+known+"\nReview: "+review+"\nCompletion: "+percent+"%")
 }
 
 document.addEventListener("keydown",e=>{
-
 if(e.key==="ArrowRight") nextCard()
-
 if(e.key==="ArrowLeft") prevCard()
-
 if(e.key===" "){
-
 e.preventDefault()
 flipCard()
-
 }
-
 })
 
 prepareDeck()
 
-console.log("Flashzy Pro loaded successfully 🚀")
+console.log("Flashzy Pro loaded successfully")
 
 </script>
 
